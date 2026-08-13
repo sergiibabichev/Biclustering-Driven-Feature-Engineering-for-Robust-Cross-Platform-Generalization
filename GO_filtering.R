@@ -170,43 +170,151 @@ ggsave(
 
 run_wilcoxon <- function(expr_matrix, class_vector, dataset_name) {
   
-  # Clean EntrezID column names
+  # Clean Entrez ID column names
   gene_names <- colnames(expr_matrix)
   gene_names <- gsub("^X", "", gene_names)
   
-  class_vector <- factor(class_vector)
+  class_vector <- droplevels(factor(class_vector))
   groups <- levels(class_vector)
   
-  results <- data.frame(
-    Gene = gene_names,
-    p_value = NA
+  if (length(groups) < 2) {
+    stop("At least two classes are required for Wilcoxon testing.")
+  }
+  
+  class_pairs <- combn(groups, 2, simplify = FALSE)
+  
+  results_list <- vector(
+    "list",
+    length = ncol(expr_matrix) * length(class_pairs)
   )
+  
+  result_index <- 1
   
   for (i in seq_len(ncol(expr_matrix))) {
     
     x <- expr_matrix[, i]
     
-    group1 <- x[class_vector == groups[1]]
-    group2 <- x[class_vector == groups[2]]
-    
-    test <- wilcox.test(group1, group2)
-    
-    results$p_value[i] <- test$p.value
+    for (class_pair in class_pairs) {
+      
+      class_1 <- class_pair[1]
+      class_2 <- class_pair[2]
+      
+      group_1 <- x[class_vector == class_1]
+      group_2 <- x[class_vector == class_2]
+      
+      valid_1 <- is.finite(group_1)
+      valid_2 <- is.finite(group_2)
+      
+      group_1 <- group_1[valid_1]
+      group_2 <- group_2[valid_2]
+      
+      if (length(group_1) > 0 &&
+          length(group_2) > 0 &&
+          length(unique(c(group_1, group_2))) > 1) {
+        
+        test_result <- wilcox.test(
+          group_1,
+          group_2,
+          alternative = "two.sided",
+          exact = FALSE
+        )
+        
+        p_value <- test_result$p.value
+        
+      } else {
+        
+        p_value <- 1
+      }
+      
+      results_list[[result_index]] <- data.frame(
+        Gene = gene_names[i],
+        Class_1 = class_1,
+        Class_2 = class_2,
+        p_value = p_value,
+        stringsAsFactors = FALSE
+      )
+      
+      result_index <- result_index + 1
+    }
   }
   
-  results$adj_p <- p.adjust(results$p_value, method = "BH")
+  pairwise_results <- do.call(rbind, results_list)
   
-  significant <- results[results$adj_p < 0.05, ]
+  # BH correction across all gene-by-class-pair comparisons
+  pairwise_results$adj_p <- p.adjust(
+    pairwise_results$p_value,
+    method = "BH"
+  )
   
-  write.csv(results,
-            paste0("wilcox_all_", dataset_name, ".csv"),
-            row.names = FALSE)
+  significant_pairwise <- pairwise_results[
+    pairwise_results$adj_p < 0.05,
+  ]
   
-  write.csv(significant,
-            paste0("wilcox_significant_", dataset_name, ".csv"),
-            row.names = FALSE)
+  # A gene is retained if it differs significantly in at least one
+  # pairwise class comparison
+  significant_genes <- unique(significant_pairwise$Gene)
   
-  return(significant)
+  gene_summary <- data.frame(
+    Gene = gene_names,
+    min_p_value = vapply(
+      gene_names,
+      function(gene) {
+        min(pairwise_results$p_value[
+          pairwise_results$Gene == gene
+        ])
+      },
+      numeric(1)
+    ),
+    min_adj_p = vapply(
+      gene_names,
+      function(gene) {
+        min(pairwise_results$adj_p[
+          pairwise_results$Gene == gene
+        ])
+      },
+      numeric(1)
+    ),
+    significant = gene_names %in% significant_genes,
+    stringsAsFactors = FALSE
+  )
+  
+  write.csv(
+    pairwise_results,
+    paste0("wilcox_all_pairwise_", dataset_name, ".csv"),
+    row.names = FALSE
+  )
+  
+  write.csv(
+    significant_pairwise,
+    paste0("wilcox_significant_pairwise_", dataset_name, ".csv"),
+    row.names = FALSE
+  )
+  
+  write.csv(
+    gene_summary,
+    paste0("wilcox_gene_summary_", dataset_name, ".csv"),
+    row.names = FALSE
+  )
+  
+  significant_gene_table <- gene_summary[
+    gene_summary$significant,
+    c("Gene", "min_p_value", "min_adj_p")
+  ]
+  
+  write.csv(
+    significant_gene_table,
+    paste0("wilcox_significant_", dataset_name, ".csv"),
+    row.names = FALSE
+  )
+  
+  message(
+    "Wilcoxon filtering completed for ", dataset_name,
+    ": ", length(groups), " classes; ",
+    length(class_pairs), " class pairs; ",
+    nrow(significant_gene_table), " retained genes."
+  )
+  
+  return(significant_gene_table)
 }
 
 tcga_sig <- run_wilcoxon(tcga_expr, tcga_class, "TCGA")
