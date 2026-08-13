@@ -267,4 +267,6 @@ Code archive. Zenodo. DOI: [to be added]
 
 ## Licence
 
-No software licence file is currently included. Before public release, add an explicit licence (for example, MIT, BSD-3-Clause, or GPL-3.0) that is compatible with the intended reuse conditions. The source datasets are governed separately by their original providers.
+## Licence
+
+This software is distributed under the MIT License. See the `LICENSE` file for details. The source datasets are governed separately by the terms and licences of their original providers.
