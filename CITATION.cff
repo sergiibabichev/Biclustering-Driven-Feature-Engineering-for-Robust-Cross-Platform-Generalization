@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using the metadata below.
+type: software
+title: >-
+  Biclustering-Driven Feature Engineering for Robust Cross-Platform
+  Generalization in Transcriptomic Cancer Classification
+version: 1.0.0
+date-released: 2026-08-13
+authors:
+  - family-names: Babichev
+    given-names: Sergii
+    affiliation: >-
+      Department of Informatics, Jan Evangelista Purkyne University in Usti
+      nad Labem, Pasteurova 15, 400 96 Usti nad Labem, Czech Republic;
+      Department of Physics, Kherson State University, University str. 17,
+      Kherson, 73008, Ukraine
+    email: sergii.babichev@ujep.cz
+    # orcid: "https://orcid.org/0000-0001-6797-1467"
+abstract: >-
+  Reproducible analysis pipeline for transcriptomic cancer classification,
+  including data preprocessing, Gene Ontology-based filtering, ensemble
+  biclustering, SOTA consensus clustering, Random Forest and XGBoost
+  modelling, external validation, and ablation analysis.
+keywords:
+  - ensemble biclustering
+  - gene expression data analysis
+  - feature selection and filtering
+  - SOTA consensus clustering
+  - Random Forest
+  - XGBoost
+  - external validation
+  - transcriptomic cancer classification
+license: MIT
+# Add these fields after the GitHub repository and Zenodo record are created:
+repository-code: "https://github.com/sergiibabichev/Ensemble-Biclustering-and-Cluster-Oriented-Weighted-Soft-Voting"
+# doi: "10.5281/zenodo.21915545"
+# url: "https://doi.org/10.5281/zenodo.21915545"
