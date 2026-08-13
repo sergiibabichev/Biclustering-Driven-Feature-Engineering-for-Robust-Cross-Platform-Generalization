@@ -1,4 +1,4 @@
-# Biclustering-Driven Feature Engineering for Robust Cross-Platform Generalization in Transcriptomic Cancer Classification
+# Ensemble Biclustering and Cluster-Oriented Weighted Soft Voting for Cross-Platform Transcriptomic Data Classification
 
 This repository contains the R and Python code used to construct, filter, cluster, and classify the transcriptomic datasets analysed in Chapter 5 of the dissertation and in the associated manuscript. The workflow combines gene-level preprocessing, Gene Ontology (GO)-based filtering, ensemble biclustering, SOTA-based consensus clustering, RF/XGBoost classification, external validation, and a four-scenario ablation study.
 
