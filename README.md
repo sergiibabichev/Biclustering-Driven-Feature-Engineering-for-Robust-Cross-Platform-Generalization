@@ -267,6 +267,4 @@ Code archive. Zenodo. DOI: [to be added]
 
 ## Licence
 
-## Licence
-
 This software is distributed under the MIT License. See the `LICENSE` file for details. The source datasets are governed separately by the terms and licences of their original providers.
