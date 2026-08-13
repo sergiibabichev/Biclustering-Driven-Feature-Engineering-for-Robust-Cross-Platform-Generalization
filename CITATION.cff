@@ -3,8 +3,7 @@ message: >-
   If you use this software, please cite it using the metadata below.
 type: software
 title: >-
-  Biclustering-Driven Feature Engineering for Robust Cross-Platform
-  Generalization in Transcriptomic Cancer Classification
+  Ensemble Biclustering and Cluster-Oriented Weighted Soft Voting for Cross-Platform Transcriptomic Data Classification
 version: 1.0.0
 date-released: 2026-08-13
 authors:
