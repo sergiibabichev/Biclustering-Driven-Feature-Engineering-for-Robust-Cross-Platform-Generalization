@@ -195,7 +195,7 @@ Keep the `tcga_cancer_common_genes.csv` and `All_validation_common_genes.csv` co
 Rscript SOTA_Spectral_Clustering.R
 ```
 
-The script standardises gene profiles, performs 50 bootstrap SOTA runs on random gene subsets, constructs a consensus matrix, applies spectral clustering, conducts cluster-wise GO enrichment, and creates cluster-specific training and validation matrices. Results are written mainly to `SOTA_results_new/`, including:
+The script standardises gene profiles, performs 40 bootstrap SOTA runs on random gene subsets, constructs a consensus matrix, applies spectral clustering, conducts cluster-wise GO enrichment, and creates cluster-specific training and validation matrices. Results are written mainly to `SOTA_results_new/`, including:
 
 - gene-to-cluster assignments and cluster summaries;
 - bootstrap cluster counts and the consensus matrix;
